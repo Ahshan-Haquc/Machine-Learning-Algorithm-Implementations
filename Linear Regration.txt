@@ -1,0 +1,58 @@
+# Step 1: Importing Required Libraries
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+%matplotlib inline
+
+# Step 2: Loading Dataset
+# Replace 'DataSet1.csv' with the path to your dataset
+df = pd.read_csv('DataSet1.csv')  
+X = df.iloc[:, 0].values  # Assuming the first column is the feature
+y = df.iloc[:, 1].values  # Assuming the second column is the target
+
+# Step 3: Visualizing the Dataset
+plt.scatter(X, y, color='blue')
+plt.title("Dataset Visualization")
+plt.xlabel("Feature")
+plt.ylabel("Target")
+plt.show()
+
+# Step 4: Implementing Linear Regression using Gradient Descent
+# Adding a bias column (intercept)
+X = np.c_[np.ones(X.shape[0]), X]
+
+# Initialize parameters
+theta = np.zeros(X.shape[1])  # [bias, slope]
+alpha = 0.01  # Learning rate
+iterations = 1000  # Number of iterations
+m = len(y)  # Number of training examples
+
+# Cost function
+def compute_cost(X, y, theta):
+    predictions = X.dot(theta)
+    errors = predictions - y
+    return (1 / (2 * m)) * np.sum(errors ** 2)
+
+# Gradient Descent
+def gradient_descent(X, y, theta, alpha, iterations):
+    for i in range(iterations):
+        predictions = X.dot(theta)
+        errors = predictions - y
+        gradient = (1 / m) * X.T.dot(errors)
+        theta -= alpha * gradient
+    return theta
+
+# Training the model
+theta = gradient_descent(X, y, theta, alpha, iterations)
+
+# Step 5: Visualizing the Regression Line
+plt.scatter(X[:, 1], y, color='blue', label='Data')
+plt.plot(X[:, 1], X.dot(theta), color='red', label='Regression Line')
+plt.title("Linear Regression Fit")
+plt.xlabel("Feature")
+plt.ylabel("Target")
+plt.legend()
+plt.show()
+
+# Final Parameters
+print(f"Final parameters: {theta}")
